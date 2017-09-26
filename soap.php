@@ -88,26 +88,26 @@ echo "<br>";
 		
 
 
-
+}
  echo "<br>";
  echo "<br>";
 
-			
-<form method="POST">
-	<input type="text" name="date">
-	<input type="submit" name="submit" value="go">
+?>			
+			<form method="POST">
+				<input type="text" name="var">
+					<input type="submit" name="submit" value="go">
+					</form>
 
-</form>
-$data = $_POST['date'];
-$soapUrl = "http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx?op=GetCursOnDate";// asmx URL of WSDL
-//$soapUser = "username";  //  username
-//$soapPassword = "password";
+<?php
+
+$variable = $_POST['var'];
+$soapUrl = "http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx?op=GetCursOnDate";
 $xml_post_string = 
     '<?xml version="1.0" encoding="utf-8"?>
     <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
     <soap:Body>
     <GetCursOnDate xmlns="http://web.cbr.ru/">
-    <On_date>'.$data.'</On_date>
+    <On_date>'.$variable.'</On_date>
     </GetCursOnDate>
     </soap:Body>
     </soap:Envelope>';
@@ -130,12 +130,11 @@ curl_setopt($ch, CURLOPT_TIMEOUT, 10);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $xml_post_string); // the SOAP request
 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-$response = curl_exec($ch); 
+$res = curl_exec($ch); 
 curl_close($ch);
-var_dump($response);
-
-
-
+var_dump($res);
 
 
 ?>
+
+
