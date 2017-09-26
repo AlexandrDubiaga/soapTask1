@@ -13,32 +13,30 @@ foreach($data as $key => $val)
     }
 
 }
-$params = array('bSelected'=>'');
-$result = $client->AllPlayerNames($params);
-/*
-foreach($result as $key => $val)
-{
-    foreach($val as $values)
-    {
-        foreach($values as $item)
-        {
-            foreach($item as $i)
-            {
-               echo $i."<br>";
-            }
 
-        }
-    }
-}
-*/
+
 ?>
-<form>
-    <input type="text" name="fieldName">
-    <input type="submit" name="go" value="go">
+<form method="POST">
+	<input type="text" name="date">
+	<input type="submit" name="submit" value="go">
 
 </form>
+<?php
+	date_default_timezone_set('Europe/Kiev');
+	$date = $_POST["date"];	
+	//var_dump($date);
+		if(date('Y-m-d', strtotime($date)) == $date){
+		$x = new SoapClient('http://www.cbr.ru/DailyInfoWebServ/DailyInfo.asmx?WSDL');
+		$dateArray["On_date"] = date($date);
+		$result = $x->GetCursOnDateXML($dateArray);
+		$arr = $result->GetCursOnDateXMLResult->any;
+		echo $arr;
+?>
+
 
 <?php
+echo "<br>";
+echo "<br>";
         $soapUrl = "http://footballpool.dataaccess.eu/data/info.wso?op=Teams"; // asmx URL of WSDL
         $xml_post_string = '<?xml version="1.0" encoding="utf-8"?>
         <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
@@ -57,7 +55,6 @@ foreach($result as $key => $val)
                         "Host: footballpool.dataaccess.eu",
                         "Content-length: ".strlen($xml_post_string),
                     );
-
             $url = $soapUrl;
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
@@ -72,10 +69,31 @@ foreach($result as $key => $val)
             curl_close($ch);
             $response1 = str_replace("<soap:Body>","",$response);
             $response2 = str_replace("</soap:Body>","",$response1);
+			$response3 = str_replace("<m:TeamsResult>","",$response2);
+			$response4 = str_replace("</m:TeamsResult>","",$response3);
+			$response5 = str_replace("m:","",$response4);
+			$teams = new SimpleXMLElement($response5);
+			//$lex = array();
+			$valex = array();
 
-            // convertingc to XML
-            $parser = simplexml_load_string($response2);
-            // user $parser to get your data out of XML response and to display it.
-    
+			foreach($teams->TeamsResponse[0]->tTeamInfo as $value)
+			{
+				 $valex[$value->sName-> __toString()] = $value->sCountryFlag-> __toString();
+			}
+			foreach($valex as $key => $val)
+			{
+				echo "Names: ".$key." "."Flags: "."$val"."<br>";	
+			}
+			
+		
+
+
+
+ echo "<br>";
+ echo "<br>";
+
+
+
+
 
 ?>
